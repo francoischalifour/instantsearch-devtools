@@ -1,0 +1,53 @@
+{
+  "name": "instantsearch-visualizer",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "François Chalifour",
+  "main": "dist/index.js",
+  "module": "dist/instantsearch-visualizer.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --env=jsdom",
+    "lint": "tsdx lint"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "@types/react": "^16.9.13",
+    "@types/react-dom": "^16.9.4",
+    "@types/react-json-tree": "^0.6.11",
+    "husky": "^3.1.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "tsdx": "^0.11.0",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@chakra-ui/core": "0.4.1",
+    "@emotion/core": "10.0.22",
+    "@emotion/styled": "10.0.23",
+    "@reach/tooltip": "0.6.2",
+    "emotion-theming": "10.0.19",
+    "react-json-tree": "0.11.2",
+    "styled-components": "4.4.1"
+  }
+}
