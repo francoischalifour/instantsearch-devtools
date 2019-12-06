@@ -10,15 +10,18 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Badge,
   Box,
   Icon,
+  Link,
+  Text,
 } from '@chakra-ui/core';
 
 import { Node } from './Tree';
+import { WidgetName } from './WidgetName';
 import { jsonTheme } from './theme';
+import { isIndexWidget } from './isIndexWidget';
 import { logWidgetToConsole } from './logWidgetToConsole';
-import { SearchResults, SearchParameters } from './types';
+import { SearchParameters } from './types';
 
 function getSimplifiedSearchParameters(searchParameters: SearchParameters) {
   return Object.keys(searchParameters).reduce((acc, key) => {
@@ -48,10 +51,6 @@ const Header = styled(AccordionHeader)`
   text-transform: uppercase;
   font-size: 0.8rem;
   font-weight: bold;
-
-  &:hover {
-    background-color: transparent;
-  }
 `;
 
 const Tooltip = styled(ReachTooltip)`
@@ -64,25 +63,44 @@ const Tooltip = styled(ReachTooltip)`
 `;
 
 interface SidebarProps {
-  selectedNode: Node;
-  searchResults: SearchResults;
+  root: Node;
+  selectedIndex: number;
 }
 
-export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
+function getWidgetFromId(node: Node, id: number): Node {
+  let count = 0;
+
+  function getWidgetFromIdRec(node: Node, id: number): Node {
+    if (count === id) {
+      return node;
+    }
+
+    count++;
+
+    return node.children.find(childNode => getWidgetFromIdRec(childNode, id))!;
+  }
+
+  return getWidgetFromIdRec(node, id);
+}
+
+export function Sidebar({ root, selectedIndex }: SidebarProps) {
+  const widget = getWidgetFromId(root, selectedIndex);
   const { onCopy: onCopySearchParameters } = useClipboard(
-    selectedNode.searchParameters
+    widget.searchParameters
   );
   const { onCopy: onCopyUiState } = useClipboard(
-    JSON.stringify(selectedNode.state, null, 2)
+    JSON.stringify(widget.state, null, 2)
   );
   const { onCopy: onCopySearchResults } = useClipboard(
-    JSON.stringify(searchResults, null, 2)
+    isIndexWidget(widget)
+      ? JSON.stringify(widget.instance.getResults(), null, 2)
+      : null
   );
   const [
     viewExhaustiveSearchParameters,
     setViewExhaustiveSearchParameters,
   ] = React.useState<boolean>(false);
-  const [isStateExpanded, setIsStateExpanded] = React.useState<boolean>(false);
+  const [isStateExpanded, setIsStateExpanded] = React.useState<boolean>(true);
   const [
     isSearchParametersExpanded,
     setIsSearchParametersExpanded,
@@ -93,38 +111,78 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
 
   return (
     <Container>
+      <Box
+        padding="1rem"
+        display="flex"
+        alignItems="center"
+        marginBottom="0.5rem"
+        borderBottom="1px solid #3d424a"
+      >
+        <Box flex="1" textAlign="left">
+          <WidgetName>{widget.name}</WidgetName>
+        </Box>
+
+        <Tooltip label="Read this widget documentation">
+          <Link
+            href={widget.documentationUrl}
+            isExternal
+            onClick={event => {
+              event.stopPropagation();
+            }}
+            marginRight={2}
+          >
+            <Icon
+              aria-label="Read this widget documentation"
+              // @ts-ignore documentation is a custom icon
+              name="documentation"
+              size="1rem"
+            />
+          </Link>
+        </Tooltip>
+        <Tooltip label="Log this widget to the console">
+          <Icon
+            aria-label="Log this widget to the console"
+            // @ts-ignore debug is a custom icon
+            name="debug"
+            size="1rem"
+            paddingTop="1px"
+            cursor="pointer"
+            onClick={event => {
+              event.preventDefault();
+              event.stopPropagation();
+
+              logWidgetToConsole(widget);
+            }}
+          />
+        </Tooltip>
+      </Box>
+
       <Accordion defaultIndex={[0, 1, 2]} allowMultiple>
-        <AccordionItem>
-          <Header>
-            <Box flex="1" textAlign="left">
-              Widget
-            </Box>
-            <Tooltip label="Log this widget to the console">
-              <Icon
-                aria-label="Log this widget to the console"
-                // @ts-ignore debug is a custom icon
-                name="debug"
-                size="1rem"
-                marginRight={2}
-                onClick={event => {
-                  event.preventDefault();
-                  event.stopPropagation();
+        {isIndexWidget(widget.instance) && (
+          <AccordionItem>
+            <Header _hover={{ backgroundColor: 'transparent' }}>
+              <Box flex="1" textAlign="left">
+                Props
+              </Box>
+              <AccordionIcon />
+            </Header>
 
-                  logWidgetToConsole(selectedNode);
+            <AccordionPanel className="code">
+              <JSONTree
+                data={{
+                  indexName: widget.instance.getIndexName(),
+                  indexId: widget.instance.getIndexId(),
                 }}
+                hideRoot
+                invertTheme={false}
+                theme={jsonTheme}
               />
-            </Tooltip>
-            <AccordionIcon />
-          </Header>
-
-          <AccordionPanel>
-            {selectedNode.name}{' '}
-            {selectedNode.type === 'ais.index' && <Badge>Index</Badge>}
-          </AccordionPanel>
-        </AccordionItem>
+            </AccordionPanel>
+          </AccordionItem>
+        )}
 
         <AccordionItem>
-          <Header>
+          <Header _hover={{ backgroundColor: 'transparent' }}>
             <Box flex="1" textAlign="left">
               State
             </Box>
@@ -163,12 +221,12 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
           </Header>
 
           <AccordionPanel>
-            {Object.keys(selectedNode.state).length === 0 ? (
-              <span style={{ fontStyle: 'italic' }}>Empty</span>
+            {Object.keys(widget.state).length === 0 ? (
+              <Text fontStyle="italic">Empty</Text>
             ) : (
               <div className="code">
                 <JSONTree
-                  data={selectedNode.state}
+                  data={widget.state}
                   hideRoot
                   invertTheme={false}
                   theme={jsonTheme}
@@ -179,9 +237,9 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
           </AccordionPanel>
         </AccordionItem>
 
-        {selectedNode.searchParameters && (
+        {widget.searchParameters && (
           <AccordionItem>
-            <Header>
+            <Header _hover={{ backgroundColor: 'transparent' }}>
               <Box flex="1" textAlign="left">
                 Search parameters
               </Box>
@@ -251,10 +309,8 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
               <JSONTree
                 data={
                   viewExhaustiveSearchParameters
-                    ? selectedNode.searchParameters
-                    : getSimplifiedSearchParameters(
-                        selectedNode.searchParameters
-                      )
+                    ? widget.searchParameters
+                    : getSimplifiedSearchParameters(widget.searchParameters)
                 }
                 hideRoot
                 invertTheme={false}
@@ -265,9 +321,9 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
           </AccordionItem>
         )}
 
-        {searchResults && (
+        {isIndexWidget(widget.instance) && (
           <AccordionItem>
-            <Header>
+            <Header _hover={{ backgroundColor: 'transparent' }}>
               <Box flex="1" textAlign="left">
                 Search results
               </Box>
@@ -306,14 +362,20 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
               <AccordionIcon />
             </Header>
 
-            <AccordionPanel className="code">
-              <JSONTree
-                data={searchResults}
-                hideRoot
-                invertTheme={false}
-                theme={jsonTheme}
-                shouldExpandNode={() => isSearchResultsExpanded}
-              />
+            <AccordionPanel>
+              {widget.instance.getResults() === null ? (
+                <Text fontStyle="italic">None</Text>
+              ) : (
+                <div className="code">
+                  <JSONTree
+                    data={widget.instance.getResults()}
+                    hideRoot
+                    invertTheme={false}
+                    theme={jsonTheme}
+                    shouldExpandNode={() => isSearchResultsExpanded}
+                  />
+                </div>
+              )}
             </AccordionPanel>
           </AccordionItem>
         )}

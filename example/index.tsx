@@ -90,8 +90,13 @@ function App() {
 
   return (
     <ThemeProvider>
-      <Tabs borderBottom="1px solid #3d424a">
-        <TabList background="#282c34" color="#afb3b9">
+      <Tabs>
+        <TabList
+          background="#282c34"
+          color="#afb3b9"
+          borderWidth="1px"
+          borderColor="#3d424a"
+        >
           <Tab _selected={{ color: '#fff' }}>Visualizer</Tab>
           <Tab _selected={{ color: '#fff' }}>App</Tab>
         </TabList>

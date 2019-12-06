@@ -1,9 +1,7 @@
-import { Widget, UiState } from './types';
+import { getWidgetDocumentationUrl } from './getWidgetDocumentationUrl';
+import { isIndexWidget } from './isIndexWidget';
 import { Node } from './Tree';
-
-function isIndexWidget(widget: any) {
-  return widget.$$type === 'ais.index';
-}
+import { Widget, UiState } from './types';
 
 function capitalize(text: string) {
   return (
@@ -34,7 +32,7 @@ export function getWidgetTreeFromRoot(
       }, widget.getHelper().state);
 
     const indexWidgets = widget.getWidgets().sort((childWidget: Widget) => {
-      if (childWidget.$$type === 'ais.index') {
+      if (isIndexWidget(childWidget)) {
         return 1;
       }
 
@@ -44,7 +42,9 @@ export function getWidgetTreeFromRoot(
     return {
       instance: widget,
       type: widget.$$type,
-      name: widget.getIndexId(),
+      name: 'Index',
+      // The Index widget documentation follows another link pattern.
+      documentationUrl: getWidgetDocumentationUrl('index-widget'),
       state,
       searchParameters,
       children: indexWidgets.map((childWidget: Widget) =>
@@ -59,6 +59,7 @@ export function getWidgetTreeFromRoot(
     instance: widget,
     type: widget.$$type,
     name: widget.$$type ? capitalize(widgetIdentifier) : 'Unknown',
+    documentationUrl: getWidgetDocumentationUrl(widget.$$type),
     state: (uiState[parentIndex.getIndexId()] || {})[widgetIdentifier] || {},
     children: [],
   };

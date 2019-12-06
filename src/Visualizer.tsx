@@ -6,7 +6,6 @@ import { chakraTheme } from './theme';
 import { Tree, Node } from './Tree';
 import { Sidebar } from './Sidebar';
 import { getWidgetTreeFromRoot } from './getWidgetTreeFromRoot';
-import { SearchResults } from './types';
 
 const Container = styled.div`
   display: flex;
@@ -24,11 +23,7 @@ const SidebarWrapper = styled.aside`
 
 export function Visualizer() {
   const [rootNode, setRootNode] = React.useState<Node | null>(null);
-  const [selectedNode, setSelectedNode] = React.useState<Node | null>(rootNode);
-  const [
-    searchResults,
-    setSearchResults,
-  ] = React.useState<SearchResults | null>(null);
+  const [selectedIndex, setSelectedIndex] = React.useState<number>(0);
 
   React.useEffect(() => {
     function visualizerMiddleware({ instantSearchInstance }) {
@@ -39,8 +34,6 @@ export function Visualizer() {
             state
           );
           setRootNode(newRootNode);
-          setSelectedNode(newRootNode);
-          setSearchResults(instantSearchInstance.helper.lastResults);
         },
         subscribe() {
           const newRootNode = getWidgetTreeFromRoot(
@@ -48,12 +41,11 @@ export function Visualizer() {
             instantSearchInstance._initialUiState
           );
           setRootNode(newRootNode);
-          setSelectedNode(newRootNode);
-          setSearchResults(instantSearchInstance.helper.lastResults);
+          setSelectedIndex(0);
         },
         unsubscribe() {
           setRootNode(null);
-          setSearchResults(null);
+          setSelectedIndex(0);
         },
       };
     }
@@ -61,7 +53,7 @@ export function Visualizer() {
     (window as any).__INSTANTSEARCH_DEVTOOLS_GLOBAL_MIDDLEWARE__ = visualizerMiddleware;
   }, [window]);
 
-  if (!rootNode || !selectedNode) {
+  if (!rootNode || selectedIndex === null) {
     return null;
   }
 
@@ -73,13 +65,13 @@ export function Visualizer() {
         <TreeWrapper>
           <Tree
             node={rootNode}
-            selectedNode={selectedNode}
-            onSelect={setSelectedNode}
+            selectedIndex={selectedIndex}
+            setSelectedIndex={setSelectedIndex}
           />
         </TreeWrapper>
 
         <SidebarWrapper>
-          <Sidebar selectedNode={selectedNode} searchResults={searchResults} />
+          <Sidebar root={rootNode} selectedIndex={selectedIndex} />
         </SidebarWrapper>
       </Container>
     </ThemeProvider>
