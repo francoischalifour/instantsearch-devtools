@@ -17,6 +17,8 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Grid,
+  Box,
 } from '@chakra-ui/core';
 
 import { Visualizer } from '../.';
@@ -34,6 +36,7 @@ const search = instantsearch({
 search.addWidgets([
   configure({
     attributesToSnippet: ['description'],
+    hitsPerPage: 8,
   }),
   index({ indexName: 'instant_search_media' }).addWidgets([
     configure({
@@ -80,10 +83,13 @@ function App() {
             <Visualizer />
           </TabPanel>
 
-          <TabPanel>
-            <div ref={searchBoxRef} />
-            <div ref={refinementListRef} />
-            <div ref={infiniteHitsRef} />
+          <TabPanel padding="1rem">
+            <Box marginBottom="1rem" ref={searchBoxRef} />
+
+            <Grid templateColumns="20% 80%">
+              <Box ref={refinementListRef} />
+              <Box ref={infiniteHitsRef} />
+            </Grid>
           </TabPanel>
         </TabPanels>
       </Tabs>
