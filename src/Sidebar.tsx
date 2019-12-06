@@ -17,6 +17,7 @@ import {
 
 import { Node } from './Tree';
 import { jsonTheme } from './theme';
+import { logWidgetToConsole } from './logWidgetToConsole';
 import { SearchResults, SearchParameters } from './types';
 
 function getSimplifiedSearchParameters(searchParameters: SearchParameters) {
@@ -69,11 +70,13 @@ interface SidebarProps {
 
 export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
   const { onCopy: onCopySearchParameters } = useClipboard(
-    selectedNode.context.searchParameters
+    selectedNode.searchParameters
   );
-  const { onCopy: onCopyUiState } = useClipboard(selectedNode.context.state);
+  const { onCopy: onCopyUiState } = useClipboard(
+    JSON.stringify(selectedNode.state, null, 2)
+  );
   const { onCopy: onCopySearchResults } = useClipboard(
-    JSON.stringify(searchResults)
+    JSON.stringify(searchResults, null, 2)
   );
   const [
     viewExhaustiveSearchParameters,
@@ -86,8 +89,23 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
         <AccordionItem>
           <Header>
             <Box flex="1" textAlign="left">
-              Name
+              Widget
             </Box>
+            <Tooltip label="Log this widget to the console">
+              <Icon
+                aria-label="Log this widget to the console"
+                // @ts-ignore debug is a custom icon
+                name="debug"
+                size="1rem"
+                marginRight={2}
+                onClick={event => {
+                  event.preventDefault();
+                  event.stopPropagation();
+
+                  logWidgetToConsole(selectedNode);
+                }}
+              />
+            </Tooltip>
             <AccordionIcon />
           </Header>
 
@@ -97,49 +115,49 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
           </AccordionPanel>
         </AccordionItem>
 
-        {selectedNode.context.state && (
-          <AccordionItem>
-            <Header>
-              <Box flex="1" textAlign="left">
-                State
-              </Box>
+        <AccordionItem>
+          <Header>
+            <Box flex="1" textAlign="left">
+              State
+            </Box>
 
-              <Tooltip
-                label="Copy to clipboard"
-                aria-label="Copy UI state to clipboard"
-              >
-                <Icon
-                  aria-label="Copy to clipboard"
-                  name="copy"
-                  marginRight={2}
-                  onClick={event => {
-                    event.preventDefault();
-                    event.stopPropagation();
+            <Tooltip
+              label="Copy to clipboard"
+              aria-label="Copy UI state to clipboard"
+            >
+              <Icon
+                aria-label="Copy to clipboard"
+                name="copy"
+                marginRight={2}
+                onClick={event => {
+                  event.preventDefault();
+                  event.stopPropagation();
 
-                    onCopyUiState!();
-                  }}
-                />
-              </Tooltip>
-              <AccordionIcon />
-            </Header>
+                  onCopyUiState!();
+                }}
+              />
+            </Tooltip>
+            <AccordionIcon />
+          </Header>
 
-            <AccordionPanel className="code">
-              {Object.keys(selectedNode.context.state).length === 0 ? (
-                'Empty state'
-              ) : (
+          <AccordionPanel>
+            {Object.keys(selectedNode.state).length === 0 ? (
+              <span style={{ fontStyle: 'italic' }}>Empty</span>
+            ) : (
+              <div className="code">
                 <JSONTree
-                  data={selectedNode.context.state}
+                  data={selectedNode.state}
                   hideRoot
                   invertTheme={false}
                   theme={jsonTheme}
                   shouldExpandNode={() => true}
                 />
-              )}
-            </AccordionPanel>
-          </AccordionItem>
-        )}
+              </div>
+            )}
+          </AccordionPanel>
+        </AccordionItem>
 
-        {selectedNode.context.searchParameters && (
+        {selectedNode.searchParameters && (
           <AccordionItem>
             <Header>
               <Box flex="1" textAlign="left">
@@ -196,9 +214,9 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
               <JSONTree
                 data={
                   viewExhaustiveSearchParameters
-                    ? selectedNode.context.searchParameters
+                    ? selectedNode.searchParameters
                     : getSimplifiedSearchParameters(
-                        selectedNode.context.searchParameters
+                        selectedNode.searchParameters
                       )
                 }
                 hideRoot

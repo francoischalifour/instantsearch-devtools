@@ -27,9 +27,9 @@ const search = instantsearch({
 });
 
 search.addWidgets([
-  // configure({
-  //   hitsPerpage: 5,
-  // }),
+  configure({
+    attributesToSnippet: ['description'],
+  }),
   index({ indexName: 'instant_search_media' }).addWidgets([
     configure({
       hitsPerPage: 20,
@@ -64,6 +64,7 @@ function App() {
     function visualizerMiddleware({ instantSearchInstance }) {
       return {
         onStateChange({ state }) {
+          console.log('onStateChange', state);
           setUiState(state);
         },
         subscribe() {

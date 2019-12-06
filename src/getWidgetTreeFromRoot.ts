@@ -1,3 +1,6 @@
+import { Widget, UiState } from './types';
+import { Node } from './Tree';
+
 function isIndexWidget(widget: any) {
   return widget.$$type === 'ais.index';
 }
@@ -11,7 +14,11 @@ function capitalize(text: string) {
   );
 }
 
-export function getWidgetTreeFromRoot(widget: any, uiState: any) {
+export function getWidgetTreeFromRoot(
+  widget: Widget,
+  uiState: UiState,
+  parentIndex: Widget | null = null
+): Node {
   if (isIndexWidget(widget)) {
     const state = uiState[widget.getIndexId()] || {};
     const searchParameters = widget
@@ -27,24 +34,26 @@ export function getWidgetTreeFromRoot(widget: any, uiState: any) {
       }, widget.getHelper().state);
 
     return {
+      instance: widget,
       type: widget.$$type,
       name: widget.getIndexId(),
-      context: {
-        state,
-        searchParameters,
-      },
+      state,
+      searchParameters,
       children: widget
         .getWidgets()
-        .map((widget: any) => getWidgetTreeFromRoot(widget, uiState)),
+        .map((childWidget: any) =>
+          getWidgetTreeFromRoot(childWidget, uiState, widget)
+        ),
     };
   }
 
+  const widgetIdentifier = widget.$$type.split('ais.')[1];
+
   return {
+    instance: widget,
     type: widget.$$type,
-    name: widget.$$type
-      ? capitalize(widget.$$type.split('ais.')[1])
-      : 'Unknown',
-    context: {},
+    name: widget.$$type ? capitalize(widgetIdentifier) : 'Unknown',
+    state: (uiState[parentIndex.getIndexId()] || {})[widgetIdentifier] || {},
     children: [],
   };
 }

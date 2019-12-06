@@ -1,17 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { UiState, SearchParameters } from './types';
+import { UiState, SearchParameters, Widget } from './types';
 import { ArrowSvg } from './ArrowSvg';
 
 export interface Node {
   type: string;
   name: string;
-  context: {
-    state?: UiState;
-    searchParameters?: SearchParameters;
-  };
+  state: UiState;
+  searchParameters?: SearchParameters;
   children: Node[];
+  instance: Widget;
 }
 
 interface TreeProps {
@@ -101,6 +100,7 @@ export function Tree({ node, selectedNode, onSelect }: TreeProps) {
               node={child}
               onSelect={onSelect}
               selectedNode={selectedNode}
+              key={`${node.type}-${generatedId()}:widgets`}
             />
           ))}
         </div>

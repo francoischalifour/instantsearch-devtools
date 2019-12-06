@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core';
+import { chakraTheme } from './theme';
 
 import { Tree, Node } from './Tree';
 import { Sidebar } from './Sidebar';
@@ -37,8 +38,12 @@ export function Visualizer({
 
   const [selectedNode, setSelectedNode] = React.useState<Node>(rootNode);
 
+  React.useEffect(() => {
+    setSelectedNode(rootNode);
+  }, [uiState]);
+
   return (
-    <ThemeProvider>
+    <ThemeProvider theme={chakraTheme}>
       <CSSReset />
       <Container>
         <TreeWrapper>
