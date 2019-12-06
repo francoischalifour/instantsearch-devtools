@@ -8,7 +8,7 @@ import {
   refinementList,
   configure,
   index,
-} from 'instantsearch.js/es-old/widgets';
+} from 'instantsearch.js/es/widgets';
 import algoliasearch from 'algoliasearch';
 import {
   ThemeProvider,
@@ -24,6 +24,11 @@ import { Visualizer } from '../.';
 const search = instantsearch({
   searchClient: algoliasearch('latency', '6be0576ff61c053d5f9a3225e2a90f76'),
   indexName: 'instant_search',
+  initialUiState: {
+    instant_search: {
+      query: 'Apple',
+    },
+  },
 });
 
 search.addWidgets([
@@ -40,10 +45,9 @@ search.addWidgets([
 search.start();
 
 function App() {
-  const [uiState, setUiState] = React.useState(null);
-  const searchBoxRef = React.useRef<HTMLElement>(null);
-  const infiniteHitsRef = React.useRef<HTMLElement>(null);
-  const refinementListRef = React.useRef<HTMLElement>(null);
+  const searchBoxRef = React.useRef(null);
+  const infiniteHitsRef = React.useRef(null);
+  const refinementListRef = React.useRef(null);
 
   React.useEffect(() => {
     search.addWidgets([
@@ -52,6 +56,9 @@ function App() {
       }),
       infiniteHits({
         container: infiniteHitsRef.current!,
+        templates: {
+          item: '{{name}}',
+        },
       }),
       refinementList({
         container: refinementListRef.current!,
@@ -60,36 +67,17 @@ function App() {
     ]);
   }, []);
 
-  React.useEffect(() => {
-    function visualizerMiddleware({ instantSearchInstance }) {
-      return {
-        onStateChange({ state }) {
-          console.log('onStateChange', state);
-          setUiState(state);
-        },
-        subscribe() {
-          setUiState(instantSearchInstance._initialUiState);
-        },
-        unsubscribe() {},
-      };
-    }
-
-    search.EXPERIMENTAL_use(visualizerMiddleware);
-  }, []);
-
   return (
     <ThemeProvider>
       <Tabs>
         <TabList>
           <Tab>Visualizer</Tab>
-          <Tab>InstantSearch</Tab>
+          <Tab>App</Tab>
         </TabList>
 
         <TabPanels>
           <TabPanel>
-            {uiState && (
-              <Visualizer instantSearchInstance={search} uiState={uiState} />
-            )}
+            <Visualizer />
           </TabPanel>
 
           <TabPanel>

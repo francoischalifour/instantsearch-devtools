@@ -6,7 +6,7 @@ import { chakraTheme } from './theme';
 import { Tree, Node } from './Tree';
 import { Sidebar } from './Sidebar';
 import { getWidgetTreeFromRoot } from './getWidgetTreeFromRoot';
-import { UiState, InstantSearch } from './types';
+import { UiState, SearchResults } from './types';
 
 const Container = styled.div`
   display: flex;
@@ -22,29 +22,58 @@ const SidebarWrapper = styled.aside`
   flex: 1;
 `;
 
-interface VisualizerProps {
-  instantSearchInstance: InstantSearch;
-  uiState: UiState;
-}
+export function Visualizer() {
+  const [uiState, setUiState] = React.useState<UiState>({});
+  const [rootNode, setRootNode] = React.useState<Node | null>(null);
+  const [selectedNode, setSelectedNode] = React.useState<Node | null>(rootNode);
+  const [
+    searchResults,
+    setSearchResults,
+  ] = React.useState<SearchResults | null>(null);
 
-export function Visualizer({
-  instantSearchInstance,
-  uiState,
-}: VisualizerProps) {
-  const rootNode = getWidgetTreeFromRoot(
-    instantSearchInstance.mainIndex,
-    uiState
-  );
+  React.useEffect(() => {
+    function visualizerMiddleware({ instantSearchInstance }) {
+      return {
+        onStateChange({ state }) {
+          setUiState(state);
+          setRootNode(
+            getWidgetTreeFromRoot(instantSearchInstance.mainIndex, state)
+          );
+          setSearchResults(instantSearchInstance.helper.lastResults);
+        },
+        subscribe() {
+          setUiState(instantSearchInstance._initialUiState);
+          setRootNode(
+            getWidgetTreeFromRoot(
+              instantSearchInstance.mainIndex,
+              instantSearchInstance._initialUiState
+            )
+          );
+          setSearchResults(instantSearchInstance.helper.lastResults);
+        },
+        unsubscribe() {
+          setUiState({});
+          setRootNode(null);
+          setSearchResults(null);
+        },
+      };
+    }
 
-  const [selectedNode, setSelectedNode] = React.useState<Node>(rootNode);
+    (window as any).__INSTANTSEARCH_DEVTOOLS_GLOBAL_MIDDLEWARE__ = visualizerMiddleware;
+  }, [window]);
 
   React.useEffect(() => {
     setSelectedNode(rootNode);
   }, [uiState]);
 
+  if (!rootNode || !selectedNode) {
+    return null;
+  }
+
   return (
     <ThemeProvider theme={chakraTheme}>
       <CSSReset />
+
       <Container>
         <TreeWrapper>
           <Tree
@@ -55,10 +84,7 @@ export function Visualizer({
         </TreeWrapper>
 
         <SidebarWrapper>
-          <Sidebar
-            selectedNode={selectedNode}
-            searchResults={instantSearchInstance.helper.lastResults}
-          />
+          <Sidebar selectedNode={selectedNode} searchResults={searchResults} />
         </SidebarWrapper>
       </Container>
     </ThemeProvider>
