@@ -33,17 +33,23 @@ export function getWidgetTreeFromRoot(
         });
       }, widget.getHelper().state);
 
+    const indexWidgets = widget.getWidgets().sort((childWidget: Widget) => {
+      if (childWidget.$$type === 'ais.index') {
+        return 1;
+      }
+
+      return -1;
+    });
+
     return {
       instance: widget,
       type: widget.$$type,
       name: widget.getIndexId(),
       state,
       searchParameters,
-      children: widget
-        .getWidgets()
-        .map((childWidget: any) =>
-          getWidgetTreeFromRoot(childWidget, uiState, widget)
-        ),
+      children: indexWidgets.map((childWidget: Widget) =>
+        getWidgetTreeFromRoot(childWidget, uiState, widget)
+      ),
     };
   }
 

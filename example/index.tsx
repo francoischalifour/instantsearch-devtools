@@ -4,9 +4,10 @@ import * as ReactDOM from 'react-dom';
 import instantsearch from 'instantsearch.js';
 import {
   searchBox,
-  infiniteHits,
   refinementList,
   configure,
+  hits,
+  pagination,
   index,
 } from 'instantsearch.js/es/widgets';
 import algoliasearch from 'algoliasearch';
@@ -19,6 +20,7 @@ import {
   TabPanel,
   Grid,
   Box,
+  Heading,
 } from '@chakra-ui/core';
 
 import { Visualizer } from '../.';
@@ -33,14 +35,16 @@ const search = instantsearch({
   },
 });
 
+const mediaIndex = index({ indexName: 'instant_search_media' });
+
 search.addWidgets([
   configure({
     attributesToSnippet: ['description'],
     hitsPerPage: 8,
   }),
-  index({ indexName: 'instant_search_media' }).addWidgets([
+  mediaIndex.addWidgets([
     configure({
-      hitsPerPage: 20,
+      hitsPerPage: 4,
     }),
   ]),
 ]);
@@ -49,16 +53,18 @@ search.start();
 
 function App() {
   const searchBoxRef = React.useRef(null);
-  const infiniteHitsRef = React.useRef(null);
   const refinementListRef = React.useRef(null);
+  const productsHitsRef = React.useRef(null);
+  const mediaHitsRef = React.useRef(null);
+  const paginationRef = React.useRef(null);
 
   React.useEffect(() => {
     search.addWidgets([
       searchBox({
         container: searchBoxRef.current!,
       }),
-      infiniteHits({
-        container: infiniteHitsRef.current!,
+      hits({
+        container: productsHitsRef.current!,
         templates: {
           item: '{{name}}',
         },
@@ -66,6 +72,18 @@ function App() {
       refinementList({
         container: refinementListRef.current!,
         attribute: 'brand',
+      }),
+      pagination({
+        container: paginationRef.current!,
+      }),
+    ]);
+
+    mediaIndex.addWidgets([
+      hits({
+        container: mediaHitsRef.current!,
+        templates: {
+          item: '{{title}}',
+        },
       }),
     ]);
   }, []);
@@ -88,7 +106,14 @@ function App() {
 
             <Grid templateColumns="20% 80%">
               <Box ref={refinementListRef} />
-              <Box ref={infiniteHitsRef} />
+
+              <div>
+                <Heading>Products</Heading>
+                <Box ref={productsHitsRef} />
+                <Heading>Articles</Heading>
+                <Box ref={mediaHitsRef} />
+                <Box ref={paginationRef} />
+              </div>
             </Grid>
           </TabPanel>
         </TabPanels>
