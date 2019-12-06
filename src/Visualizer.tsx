@@ -6,7 +6,7 @@ import { chakraTheme } from './theme';
 import { Tree, Node } from './Tree';
 import { Sidebar } from './Sidebar';
 import { getWidgetTreeFromRoot } from './getWidgetTreeFromRoot';
-import { UiState, SearchResults } from './types';
+import { SearchResults } from './types';
 
 const Container = styled.div`
   display: flex;
@@ -23,7 +23,6 @@ const SidebarWrapper = styled.aside`
 `;
 
 export function Visualizer() {
-  const [uiState, setUiState] = React.useState<UiState>({});
   const [rootNode, setRootNode] = React.useState<Node | null>(null);
   const [selectedNode, setSelectedNode] = React.useState<Node | null>(rootNode);
   const [
@@ -35,24 +34,24 @@ export function Visualizer() {
     function visualizerMiddleware({ instantSearchInstance }) {
       return {
         onStateChange({ state }) {
-          setUiState(state);
-          setRootNode(
-            getWidgetTreeFromRoot(instantSearchInstance.mainIndex, state)
+          const newRootNode = getWidgetTreeFromRoot(
+            instantSearchInstance.mainIndex,
+            state
           );
+          setRootNode(newRootNode);
+          setSelectedNode(newRootNode);
           setSearchResults(instantSearchInstance.helper.lastResults);
         },
         subscribe() {
-          setUiState(instantSearchInstance._initialUiState);
-          setRootNode(
-            getWidgetTreeFromRoot(
-              instantSearchInstance.mainIndex,
-              instantSearchInstance._initialUiState
-            )
+          const newRootNode = getWidgetTreeFromRoot(
+            instantSearchInstance.mainIndex,
+            instantSearchInstance._initialUiState
           );
+          setRootNode(newRootNode);
+          setSelectedNode(newRootNode);
           setSearchResults(instantSearchInstance.helper.lastResults);
         },
         unsubscribe() {
-          setUiState({});
           setRootNode(null);
           setSearchResults(null);
         },
@@ -61,10 +60,6 @@ export function Visualizer() {
 
     (window as any).__INSTANTSEARCH_DEVTOOLS_GLOBAL_MIDDLEWARE__ = visualizerMiddleware;
   }, [window]);
-
-  React.useEffect(() => {
-    setSelectedNode(rootNode);
-  }, [uiState]);
 
   if (!rootNode || !selectedNode) {
     return null;

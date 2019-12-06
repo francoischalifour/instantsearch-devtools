@@ -82,6 +82,14 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
     viewExhaustiveSearchParameters,
     setViewExhaustiveSearchParameters,
   ] = React.useState<boolean>(false);
+  const [isStateExpanded, setIsStateExpanded] = React.useState<boolean>(false);
+  const [
+    isSearchParametersExpanded,
+    setIsSearchParametersExpanded,
+  ] = React.useState<boolean>(false);
+  const [isSearchResultsExpanded, setIsSearchResultsExpanded] = React.useState<
+    boolean
+  >(false);
 
   return (
     <Container>
@@ -122,11 +130,25 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
             </Box>
 
             <Tooltip
+              label="Expand all attributes"
+              aria-label="Expand all state attributes"
+            >
+              <Icon
+                name="up-down"
+                marginRight={2}
+                onClick={event => {
+                  event.preventDefault();
+                  event.stopPropagation();
+
+                  setIsStateExpanded(prevValue => !prevValue);
+                }}
+              />
+            </Tooltip>
+            <Tooltip
               label="Copy to clipboard"
               aria-label="Copy UI state to clipboard"
             >
               <Icon
-                aria-label="Copy to clipboard"
                 name="copy"
                 marginRight={2}
                 onClick={event => {
@@ -150,7 +172,7 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
                   hideRoot
                   invertTheme={false}
                   theme={jsonTheme}
-                  shouldExpandNode={() => true}
+                  shouldExpandNode={() => isStateExpanded}
                 />
               </div>
             )}
@@ -192,6 +214,21 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
                 />
               </Tooltip>
               <Tooltip
+                label="Expand all attributes"
+                aria-label="Expand all search parameters attributes"
+              >
+                <Icon
+                  name="up-down"
+                  marginRight={2}
+                  onClick={event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    setIsSearchParametersExpanded(prevValue => !prevValue);
+                  }}
+                />
+              </Tooltip>
+              <Tooltip
                 label="Copy to clipboard"
                 aria-label="Copy search parameters to clipboard"
               >
@@ -222,6 +259,7 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
                 hideRoot
                 invertTheme={false}
                 theme={jsonTheme}
+                shouldExpandNode={() => isSearchParametersExpanded}
               />
             </AccordionPanel>
           </AccordionItem>
@@ -233,6 +271,22 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
               <Box flex="1" textAlign="left">
                 Search results
               </Box>
+
+              <Tooltip
+                label="Expand all attributes"
+                aria-label="Expand all search results attributes"
+              >
+                <Icon
+                  name="up-down"
+                  marginRight={2}
+                  onClick={event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    setIsSearchResultsExpanded(prevValue => !prevValue);
+                  }}
+                />
+              </Tooltip>
               <Tooltip
                 label="Copy to clipboard"
                 aria-label="Copy search results to clipboard"
@@ -258,6 +312,7 @@ export function Sidebar({ selectedNode, searchResults }: SidebarProps) {
                 hideRoot
                 invertTheme={false}
                 theme={jsonTheme}
+                shouldExpandNode={() => isSearchResultsExpanded}
               />
             </AccordionPanel>
           </AccordionItem>
