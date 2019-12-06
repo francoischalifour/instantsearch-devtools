@@ -90,10 +90,10 @@ function App() {
 
   return (
     <ThemeProvider>
-      <Tabs>
-        <TabList>
-          <Tab>Visualizer</Tab>
-          <Tab>App</Tab>
+      <Tabs borderBottom="1px solid #3d424a">
+        <TabList background="#282c34" color="#afb3b9">
+          <Tab _selected={{ color: '#fff' }}>Visualizer</Tab>
+          <Tab _selected={{ color: '#fff' }}>App</Tab>
         </TabList>
 
         <TabPanels>

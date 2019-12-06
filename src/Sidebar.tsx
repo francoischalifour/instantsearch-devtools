@@ -50,7 +50,7 @@ const Header = styled(AccordionHeader)`
   font-weight: bold;
 
   &:hover {
-    background: transparent;
+    background-color: transparent;
   }
 `;
 
