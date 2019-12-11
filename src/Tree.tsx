@@ -78,8 +78,6 @@ function TreeList({
 }: TreeProps) {
   const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
 
-  console.log(baseId);
-
   return (
     <List>
       <ListItem key={`${node.type}-${baseId}`}>
@@ -148,7 +146,7 @@ export function Tree({ node, selectedIndex, setSelectedIndex }: TreeProps) {
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [window]);
+  }, [node, setSelectedIndex]);
 
   return (
     <TreeList

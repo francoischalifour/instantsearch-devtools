@@ -24,15 +24,15 @@ interface WidgetSearchResultsPanelProps {
 export function WidgetSearchResultsPanel({
   widget,
 }: WidgetSearchResultsPanelProps) {
-  if (!isIndexWidget(widget.node)) {
-    return null;
-  }
-
   const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
   const [isExhaustive, setIsExhaustive] = React.useState<boolean>(false);
   const { onCopy } = useClipboard(
     JSON.stringify(widget.searchParameters, null, 2)
   );
+
+  if (!isIndexWidget(widget.node)) {
+    return null;
+  }
 
   return (
     <>

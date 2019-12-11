@@ -5,12 +5,13 @@ import { chakraTheme } from './theme';
 
 import { Tree, Node } from './Tree';
 import { Sidebar } from './Sidebar';
-import { getWidgetTreeFromRoot } from './getWidgetTreeFromRoot';
+import { createDevToolsMiddleware } from './createDevToolsMiddleware';
 
 const Container = styled.div`
   display: flex;
   min-height: 100vh;
 `;
+
 const TreeWrapper = styled.main`
   flex: 2;
   background-color: #282c34;
@@ -26,32 +27,13 @@ export function Visualizer() {
   const [selectedIndex, setSelectedIndex] = React.useState<number>(0);
 
   React.useEffect(() => {
-    function visualizerMiddleware({ instantSearchInstance }) {
-      return {
-        onStateChange({ state }) {
-          const newRootNode = getWidgetTreeFromRoot(
-            instantSearchInstance.mainIndex,
-            state
-          );
-          setRootNode(newRootNode);
-        },
-        subscribe() {
-          const newRootNode = getWidgetTreeFromRoot(
-            instantSearchInstance.mainIndex,
-            instantSearchInstance._initialUiState
-          );
-          setRootNode(newRootNode);
-          setSelectedIndex(0);
-        },
-        unsubscribe() {
-          setRootNode(null);
-          setSelectedIndex(0);
-        },
-      };
-    }
+    const devToolsMiddleware = createDevToolsMiddleware({
+      setRootNode,
+      setSelectedIndex,
+    });
 
-    (window as any).__INSTANTSEARCH_DEVTOOLS_GLOBAL_MIDDLEWARE__ = visualizerMiddleware;
-  }, [window]);
+    (window as any).__INSTANTSEARCH_DEVTOOLS_GLOBAL_MIDDLEWARE__ = devToolsMiddleware;
+  }, []);
 
   if (!rootNode || selectedIndex === null) {
     return null;

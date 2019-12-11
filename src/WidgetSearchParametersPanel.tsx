@@ -22,15 +22,15 @@ interface WidgetSearchParametersPanelProps {
 export function WidgetSearchParametersPanel({
   widget,
 }: WidgetSearchParametersPanelProps) {
-  if (!widget.searchParameters) {
-    return null;
-  }
-
   const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
   const [isExhaustive, setIsExhaustive] = React.useState<boolean>(false);
   const { onCopy } = useClipboard(
     JSON.stringify(widget.searchParameters, null, 2)
   );
+
+  if (!widget.searchParameters) {
+    return null;
+  }
 
   return (
     <>
