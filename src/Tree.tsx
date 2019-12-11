@@ -6,13 +6,14 @@ import { ArrowSvg } from './ArrowSvg';
 import { UiState, SearchParameters, Widget } from './types';
 
 export interface Node {
+  id: number;
   type: string;
   name: string;
   state: UiState;
   searchParameters?: SearchParameters;
   documentationUrl: string;
   children: Node[];
-  instance: Widget;
+  node: Widget;
 }
 
 interface TreeProps {
@@ -64,7 +65,7 @@ function TreeNode({ node, isSelected, onClick }: TreeNodeProps) {
   return (
     <NodeItem className="code" isSelected={isSelected} onClick={onClick}>
       {node.name}
-      {node.type === 'ais.index' && `<${node.instance.getIndexId()}>`}
+      {node.type === 'ais.index' && `<${node.node.getIndexId()}>`}
     </NodeItem>
   );
 }
@@ -76,6 +77,8 @@ function TreeList({
   baseId = 0,
 }: TreeProps) {
   const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
+
+  console.log(baseId);
 
   return (
     <List>
@@ -92,8 +95,8 @@ function TreeList({
 
           <TreeNode
             node={node}
-            isSelected={baseId === selectedIndex}
-            onClick={() => setSelectedIndex(baseId)}
+            isSelected={node.id === selectedIndex}
+            onClick={() => setSelectedIndex(node.id)}
           />
         </ListItemNode>
 

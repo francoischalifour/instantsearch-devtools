@@ -1,29 +1,29 @@
 import { Node } from './Tree';
 
-export function logWidgetToConsole(node: Node): void {
+export function logWidgetToConsole(widget: Node): void {
   const supportsGroup = typeof console.groupCollapsed === 'function';
 
   if (supportsGroup) {
     console.groupCollapsed(
-      `[Click to expand] %c${node.name}`,
+      `[Click to expand] %c${widget.name}`,
       // --dom-tag-name-color is the CSS variable Chrome styles HTML elements with in the console.
       'color: var(--dom-tag-name-color); font-weight: normal;'
     );
   }
 
-  if (Object.keys(node.state).length > 0) {
-    console.log('State:', node.state);
+  if (Object.keys(widget.state).length > 0) {
+    console.log('State:', widget.state);
   }
 
-  if (node.searchParameters) {
-    console.log('Search parameters:', node.searchParameters);
+  if (widget.searchParameters) {
+    console.log('Search parameters:', widget.searchParameters);
   }
 
-  if (node.children.length > 0) {
-    console.log('Children', node.children);
+  if (widget.children.length > 0) {
+    console.log('Children', widget.children);
   }
 
-  console.log('Instance', node.instance);
+  console.log('Node', widget.node);
 
   if ((window as any).chrome || /firefox/i.test(navigator.userAgent)) {
     console.log(
