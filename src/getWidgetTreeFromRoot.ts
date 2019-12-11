@@ -1,6 +1,6 @@
 import { getWidgetDocumentationUrl } from './getWidgetDocumentationUrl';
 import { isIndexWidget } from './isIndexWidget';
-import { Node } from './Tree';
+import { Node } from './types';
 import { Widget, UiState } from './types';
 
 function capitalize(text: string) {

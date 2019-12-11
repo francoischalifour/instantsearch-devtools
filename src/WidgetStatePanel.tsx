@@ -1,5 +1,4 @@
 import React from 'react';
-import JSONTree from 'react-json-tree';
 import {
   AccordionIcon,
   AccordionPanel,
@@ -10,10 +9,9 @@ import {
 } from '@chakra-ui/core';
 
 import { Node } from './types';
-import { jsonTheme } from './theme';
-import { getJsonItemString } from './getJsonItemString';
 import { PanelHeader } from './PanelHeader';
 import { PanelTooltip } from './PanelTooltip';
+import { JsonTree } from './JsonTree';
 
 interface WidgetStatePanelProps {
   widget: Node;
@@ -67,16 +65,7 @@ export function WidgetStatePanel({ widget }: WidgetStatePanelProps) {
         {Object.keys(widget.state).length === 0 ? (
           <Text fontStyle="italic">Empty</Text>
         ) : (
-          <div className="code">
-            <JSONTree
-              data={widget.state}
-              hideRoot
-              invertTheme={false}
-              theme={jsonTheme}
-              shouldExpandNode={() => isExpanded}
-              getItemString={getJsonItemString}
-            />
-          </div>
+          <JsonTree data={widget.state} shouldExpandNode={() => isExpanded} />
         )}
       </AccordionPanel>
     </>

@@ -6,9 +6,11 @@ export function getJsonItemString(
   _itemType: string,
   itemString: string
 ) {
+  const itemsCount = itemString.split(' ')[0];
+
   return (
     <span>
-      {type}({itemString.split(' ')[0]})
+      {type}({itemsCount})
     </span>
   );
 }

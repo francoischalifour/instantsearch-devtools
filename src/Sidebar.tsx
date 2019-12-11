@@ -45,19 +45,19 @@ export function Sidebar({ root, selectedIndex }: SidebarProps) {
       <WidgetNamePanel widget={widget} />
 
       <Accordion defaultIndex={[0, 1, 2]} allowMultiple>
-        <AccordionItem>
+        <AccordionItem border="none">
           <WidgetPropsPanel widget={widget} />
         </AccordionItem>
 
-        <AccordionItem>
+        <AccordionItem border="none">
           <WidgetStatePanel widget={widget} />
         </AccordionItem>
 
-        <AccordionItem>
+        <AccordionItem border="none">
           <WidgetSearchParametersPanel widget={widget} />
         </AccordionItem>
 
-        <AccordionItem>
+        <AccordionItem border="none">
           <WidgetSearchResultsPanel widget={widget} />
         </AccordionItem>
       </Accordion>

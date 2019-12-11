@@ -1,5 +1,4 @@
 import React from 'react';
-import JSONTree from 'react-json-tree';
 import {
   AccordionIcon,
   AccordionPanel,
@@ -9,11 +8,10 @@ import {
 } from '@chakra-ui/core';
 
 import { Node } from './types';
-import { jsonTheme } from './theme';
-import { getJsonItemString } from './getJsonItemString';
 import { getObjectWithoutEmptyValues } from './getObjectWithoutEmptyValues';
 import { PanelHeader } from './PanelHeader';
 import { PanelTooltip } from './PanelTooltip';
+import { JsonTree } from './JsonTree';
 
 interface WidgetSearchParametersPanelProps {
   widget: Node;
@@ -93,18 +91,14 @@ export function WidgetSearchParametersPanel({
         <AccordionIcon />
       </PanelHeader>
 
-      <AccordionPanel className="code">
-        <JSONTree
+      <AccordionPanel>
+        <JsonTree
           data={
             isExhaustive
               ? widget.searchParameters
               : getObjectWithoutEmptyValues(widget.searchParameters)
           }
-          hideRoot
-          invertTheme={false}
-          theme={jsonTheme}
           shouldExpandNode={() => isExpanded}
-          getItemString={getJsonItemString}
         />
       </AccordionPanel>
     </>

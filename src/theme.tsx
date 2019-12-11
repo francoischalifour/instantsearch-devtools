@@ -1,6 +1,19 @@
 import React from 'react';
 import { theme } from '@chakra-ui/core';
 
+export const devToolsTheme = {
+  fontFamily: {
+    sans:
+      '-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol',
+    monospace:
+      'SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace',
+  },
+  colors: {
+    primary: '#98c0e4',
+    dark: '#6f9dc6',
+  },
+};
+
 export const chakraTheme = {
   ...theme,
   icons: {
@@ -45,7 +58,7 @@ export const jsonTheme = {
   base0A: '#ebcb8b',
   base0B: '#cedae0',
   base0C: '#96b5b4',
-  base0D: '#9d87d2',
+  base0D: '#98c0e4',
   base0E: '#b48ead',
   base0F: '#ab7967',
 };

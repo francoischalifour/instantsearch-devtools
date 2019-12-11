@@ -1,1 +1,1 @@
-export { Visualizer } from './Visualizer';
+export { DevTools } from './DevTools';

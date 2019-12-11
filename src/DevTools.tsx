@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core';
-import { chakraTheme } from './theme';
 
 import { Node } from './types';
+import { chakraTheme } from './theme';
 import { Tree } from './Tree';
 import { Sidebar } from './Sidebar';
 import { createDevToolsMiddleware } from './createDevToolsMiddleware';
@@ -23,7 +23,7 @@ const SidebarWrapper = styled.aside`
   flex: 1;
 `;
 
-export function Visualizer() {
+export function DevTools() {
   const [rootNode, setRootNode] = React.useState<Node | null>(null);
   const [selectedIndex, setSelectedIndex] = React.useState<number>(0);
 

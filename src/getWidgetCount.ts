@@ -1,4 +1,4 @@
-import { Node } from './Tree';
+import { Node } from './types';
 
 export function getWidgetCount(root: Node): number {
   return (

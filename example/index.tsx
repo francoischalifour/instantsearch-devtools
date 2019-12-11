@@ -23,7 +23,7 @@ import {
   Heading,
 } from '@chakra-ui/core';
 
-import { Visualizer } from '../.';
+import { DevTools } from '../.';
 
 const search = instantsearch({
   searchClient: algoliasearch('latency', '6be0576ff61c053d5f9a3225e2a90f76'),
@@ -97,13 +97,13 @@ function App() {
           borderWidth="1px"
           borderColor="#3d424a"
         >
-          <Tab _selected={{ color: '#fff' }}>Visualizer</Tab>
+          <Tab _selected={{ color: '#fff' }}>DevTools</Tab>
           <Tab _selected={{ color: '#fff' }}>App</Tab>
         </TabList>
 
         <TabPanels>
           <TabPanel>
-            <Visualizer />
+            <DevTools />
           </TabPanel>
 
           <TabPanel padding="1rem">

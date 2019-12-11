@@ -1,12 +1,10 @@
 import React from 'react';
-import JSONTree from 'react-json-tree';
 import { AccordionIcon, AccordionPanel, Box } from '@chakra-ui/core';
 
 import { Node } from './types';
 import { isIndexWidget } from './isIndexWidget';
-import { jsonTheme } from './theme';
-import { getJsonItemString } from './getJsonItemString';
 import { PanelHeader } from './PanelHeader';
+import { JsonTree } from './JsonTree';
 
 interface WidgetPropsPanelProps {
   widget: Node;
@@ -26,16 +24,12 @@ export function WidgetPropsPanel({ widget }: WidgetPropsPanelProps) {
         <AccordionIcon />
       </PanelHeader>
 
-      <AccordionPanel className="code">
-        <JSONTree
+      <AccordionPanel>
+        <JsonTree
           data={{
             indexName: widget.node.getIndexName(),
             indexId: widget.node.getIndexId(),
           }}
-          hideRoot
-          invertTheme={false}
-          theme={jsonTheme}
-          getItemString={getJsonItemString}
         />
       </AccordionPanel>
     </>

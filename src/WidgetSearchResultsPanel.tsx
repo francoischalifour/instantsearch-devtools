@@ -1,5 +1,4 @@
 import React from 'react';
-import JSONTree from 'react-json-tree';
 import {
   AccordionIcon,
   AccordionPanel,
@@ -10,12 +9,11 @@ import {
 } from '@chakra-ui/core';
 
 import { Node } from './types';
-import { jsonTheme } from './theme';
-import { getJsonItemString } from './getJsonItemString';
 import { isIndexWidget } from './isIndexWidget';
 import { getObjectWithoutEmptyValues } from './getObjectWithoutEmptyValues';
 import { PanelHeader } from './PanelHeader';
 import { PanelTooltip } from './PanelTooltip';
+import { JsonTree } from './JsonTree';
 
 interface WidgetSearchResultsPanelProps {
   widget: Node;
@@ -27,7 +25,7 @@ export function WidgetSearchResultsPanel({
   const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
   const [isExhaustive, setIsExhaustive] = React.useState<boolean>(false);
   const { onCopy } = useClipboard(
-    JSON.stringify(widget.searchParameters, null, 2)
+    JSON.stringify(widget.node.getResults && widget.node.getResults(), null, 2)
   );
 
   if (!isIndexWidget(widget.node)) {
@@ -99,20 +97,14 @@ export function WidgetSearchResultsPanel({
         {widget.node.getResults() === null ? (
           <Text fontStyle="italic">None</Text>
         ) : (
-          <div className="code">
-            <JSONTree
-              data={
-                isExhaustive
-                  ? widget.node.getResults()
-                  : getObjectWithoutEmptyValues(widget.node.getResults())
-              }
-              hideRoot
-              invertTheme={false}
-              theme={jsonTheme}
-              shouldExpandNode={() => isExpanded}
-              getItemString={getJsonItemString}
-            />
-          </div>
+          <JsonTree
+            data={
+              isExhaustive
+                ? widget.node.getResults()
+                : getObjectWithoutEmptyValues(widget.node.getResults())
+            }
+            shouldExpandNode={() => isExpanded}
+          />
         )}
       </AccordionPanel>
     </>

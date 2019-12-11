@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { getWidgetCount } from './getWidgetCount';
-import { ArrowSvg } from './ArrowSvg';
 import { Node } from './types';
+import { getWidgetCount } from './getWidgetCount';
+import { devToolsTheme } from './theme';
+import { ArrowSvg } from './ArrowSvg';
+import { WidgetName } from './WidgetName';
 
 interface TreeProps {
   node: Node;
@@ -20,6 +22,7 @@ interface TreeNodeProps {
 
 const List = styled.ul`
   padding-left: 1rem;
+  list-style: none;
 `;
 
 const ListItem = styled.li``;
@@ -28,8 +31,8 @@ const NodeItem = styled.div`
   cursor: default;
   padding: 6px;
   width: 100%;
-  color: ${props => (props.isSelected ? '#fff' : '#61dafb')};
-  ${props => props.isSelected && 'background-color: #178fb9;'}
+  ${props =>
+    props.isSelected && `background-color: ${devToolsTheme.colors.dark};`}
   ${props =>
     !props.isSelected &&
     `
@@ -46,9 +49,11 @@ const ListItemNode = styled.div`
 
 function TreeNode({ node, isSelected, onClick }: TreeNodeProps) {
   return (
-    <NodeItem className="code" isSelected={isSelected} onClick={onClick}>
-      {node.name}
-      {node.type === 'ais.index' && `<${node.node.getIndexId()}>`}
+    <NodeItem isSelected={isSelected} onClick={onClick}>
+      <WidgetName isSelected={isSelected}>
+        {node.name}
+        {node.type === 'ais.index' && `<${node.node.getIndexId()}>`}
+      </WidgetName>
     </NodeItem>
   );
 }
