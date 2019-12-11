@@ -27,33 +27,54 @@ const List = styled.ul`
 
 const ListItem = styled.li``;
 
+const NodeItemBackground = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: -100vw;
+  ${props =>
+    props.isSelected &&
+    `background-color: ${devToolsTheme.colors.dark} !important;`}
+`;
+
 const NodeItem = styled.div`
+  position: relative;
   cursor: default;
   padding: 6px;
   width: 100%;
-  ${props =>
-    props.isSelected && `background-color: ${devToolsTheme.colors.dark};`}
-  ${props =>
-    !props.isSelected &&
-    `
-    &:hover {
+
+  &:hover {
+    ${NodeItemBackground} {
       background-color: rgba(255, 255, 255, 0.1);
     }
-  `}
+  }
 `;
 
 const ListItemNode = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
+  user-select: none;
+`;
+
+const ArrowContainer = styled.span`
+  z-index: 1;
+  position: absolute;
+  left: -20px;
+  ${props => !props.isExpanded && 'transform: rotate(-90deg)'}
 `;
 
 function TreeNode({ node, isSelected, onClick }: TreeNodeProps) {
   return (
     <NodeItem isSelected={isSelected} onClick={onClick}>
-      <WidgetName isSelected={isSelected}>
-        {node.name}
-        {node.type === 'ais.index' && `<${node.node.getIndexId()}>`}
-      </WidgetName>
+      <NodeItemBackground isSelected={isSelected} />
+      <div style={{ position: 'relative' }}>
+        <WidgetName isSelected={isSelected}>
+          {node.name}
+          {node.type === 'ais.index' && `<${node.node.getIndexId()}>`}
+        </WidgetName>
+      </div>
     </NodeItem>
   );
 }
@@ -69,14 +90,16 @@ function TreeList({
   return (
     <List>
       <ListItem key={`${node.type}-${baseId}`}>
-        <ListItemNode>
+        <ListItemNode
+          onDoubleClick={() => setIsExpanded(prevValue => !prevValue)}
+        >
           {node.children.length > 0 && (
-            <span
+            <ArrowContainer
+              isExpanded={isExpanded}
               onClick={() => setIsExpanded(prevValue => !prevValue)}
-              style={!isExpanded ? { transform: 'rotate(-90deg)' } : undefined}
             >
               <ArrowSvg />
-            </span>
+            </ArrowContainer>
           )}
 
           <TreeNode
