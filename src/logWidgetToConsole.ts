@@ -1,4 +1,4 @@
-import { Node } from './Tree';
+import { Node } from './types';
 
 export function logWidgetToConsole(widget: Node): void {
   const supportsGroup = typeof console.groupCollapsed === 'function';

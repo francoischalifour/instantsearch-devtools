@@ -3,18 +3,7 @@ import styled from 'styled-components';
 
 import { getWidgetCount } from './getWidgetCount';
 import { ArrowSvg } from './ArrowSvg';
-import { UiState, SearchParameters, Widget } from './types';
-
-export interface Node {
-  id: number;
-  type: string;
-  name: string;
-  state: UiState;
-  searchParameters?: SearchParameters;
-  documentationUrl: string;
-  children: Node[];
-  node: Widget;
-}
+import { Node } from './types';
 
 interface TreeProps {
   node: Node;
@@ -34,12 +23,6 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li``;
-
-// --dark-color-background: #282c34;
-// --dark-color-background-hover: rgba(255, 255, 255, 0.1);
-// --dark-color-background-inactive: #3d424a;
-// --dark-color-background-invalid: #5c0000;
-// --dark-color-background-selected: #178fb9;
 
 const NodeItem = styled.div`
   cursor: default;

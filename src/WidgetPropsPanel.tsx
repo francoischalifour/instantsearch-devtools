@@ -2,10 +2,10 @@ import React from 'react';
 import JSONTree from 'react-json-tree';
 import { AccordionIcon, AccordionPanel, Box } from '@chakra-ui/core';
 
+import { Node } from './types';
 import { isIndexWidget } from './isIndexWidget';
 import { jsonTheme } from './theme';
 import { getJsonItemString } from './getJsonItemString';
-import { Node } from './Tree';
 import { PanelHeader } from './PanelHeader';
 
 interface WidgetPropsPanelProps {

@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core';
 import { chakraTheme } from './theme';
 
-import { Tree, Node } from './Tree';
+import { Node } from './types';
+import { Tree } from './Tree';
 import { Sidebar } from './Sidebar';
 import { createDevToolsMiddleware } from './createDevToolsMiddleware';
 

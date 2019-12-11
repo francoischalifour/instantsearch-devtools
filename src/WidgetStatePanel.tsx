@@ -9,9 +9,9 @@ import {
   useClipboard,
 } from '@chakra-ui/core';
 
+import { Node } from './types';
 import { jsonTheme } from './theme';
 import { getJsonItemString } from './getJsonItemString';
-import { Node } from './Tree';
 import { PanelHeader } from './PanelHeader';
 import { PanelTooltip } from './PanelTooltip';
 

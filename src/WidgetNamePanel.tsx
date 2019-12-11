@@ -2,7 +2,7 @@ import React from 'react';
 import Tooltip from '@reach/tooltip';
 import { Box, Icon, Link } from '@chakra-ui/core';
 
-import { Node } from './Tree';
+import { Node } from './types';
 import { WidgetName } from './WidgetName';
 import { logWidgetToConsole } from './logWidgetToConsole';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Accordion, AccordionItem } from '@chakra-ui/core';
 
-import { Node } from './Tree';
+import { Node } from './types';
 import { WidgetNamePanel } from './WidgetNamePanel';
 import { WidgetPropsPanel } from './WidgetPropsPanel';
 import { WidgetStatePanel } from './WidgetStatePanel';
