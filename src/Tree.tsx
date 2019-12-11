@@ -141,14 +141,16 @@ export function Tree({ node, selectedIndex, setSelectedIndex }: TreeProps) {
         return;
       }
 
+      const widgetCount = getWidgetCount(node);
+
       if (event.key === 'ArrowDown') {
         event.preventDefault();
-        setSelectedIndex(prevValue =>
-          Math.min(prevValue + 1, getWidgetCount(node) - 1)
-        );
+        setSelectedIndex(prevValue => Math.abs((prevValue + 1) % widgetCount));
       } else if (event.key === 'ArrowUp') {
         event.preventDefault();
-        setSelectedIndex(prevValue => Math.max(0, prevValue - 1));
+        setSelectedIndex(prevValue =>
+          Math.abs(prevValue === 0 ? widgetCount - 1 : prevValue - 1)
+        );
       }
     }
 
