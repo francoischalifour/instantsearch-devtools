@@ -7,7 +7,7 @@ import { devToolsTheme } from './theme';
 import { ArrowSvg } from './ArrowSvg';
 import { WidgetName } from './WidgetName';
 
-interface TreeProps {
+export interface TreeProps {
   node: Node;
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
   selectedIndex: number;
@@ -61,8 +61,9 @@ const ListItemNode = styled.div`
 const ArrowContainer = styled.span`
   z-index: 1;
   position: absolute;
-  left: -20px;
-  ${props => !props.isExpanded && 'transform: rotate(-90deg)'}
+  left: -18px;
+  color: ${props => (props.isSelected ? '#fff' : '#8f949d')};
+  ${props => !props.isExpanded && 'transform: rotate(-90deg);'}
 `;
 
 function TreeNode({ node, isSelected, onClick }: TreeNodeProps) {
@@ -97,6 +98,7 @@ function TreeList({
             <ArrowContainer
               isExpanded={isExpanded}
               onClick={() => setIsExpanded(prevValue => !prevValue)}
+              isSelected={node.id === selectedIndex}
             >
               <ArrowSvg />
             </ArrowContainer>

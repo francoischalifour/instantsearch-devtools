@@ -16,3 +16,11 @@ export type SearchParameters = any;
 export type UiState = any;
 
 export type Widget = any;
+
+export type DevToolsWindow = Window &
+  typeof globalThis & {
+    __INSTANTSEARCH_DEVTOOLS__: {
+      version: string;
+      getMiddleware: () => Function;
+    };
+  };

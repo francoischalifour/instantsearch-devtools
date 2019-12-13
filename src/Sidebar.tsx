@@ -22,19 +22,11 @@ interface SidebarProps {
 }
 
 function getWidgetFromId(node: Node, id: number): Node {
-  let count = 0;
-
-  function getWidgetFromIdRec(node: Node, id: number): Node {
-    if (count === id) {
-      return node;
-    }
-
-    count++;
-
-    return node.children.find(childNode => getWidgetFromIdRec(childNode, id))!;
+  if (node.id === id) {
+    return node;
   }
 
-  return getWidgetFromIdRec(node, id);
+  return node.children.find(childNode => getWidgetFromId(childNode, id))!;
 }
 
 export function Sidebar({ root, selectedIndex }: SidebarProps) {
