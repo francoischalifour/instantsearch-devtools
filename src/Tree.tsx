@@ -7,7 +7,7 @@ import { devToolsTheme } from './theme';
 import { ArrowSvg } from './ArrowSvg';
 import { WidgetName } from './WidgetName';
 
-export interface TreeProps {
+interface TreeProps {
   node: Node;
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
   selectedIndex: number;

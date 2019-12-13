@@ -104,23 +104,25 @@ function Idling() {
   const [isEnabled, setIsEnabled] = React.useState<boolean>(true);
 
   React.useEffect(() => {
-    let timerId;
+    let waitingTimerId;
+    let detectedTimerId;
 
-    timerId = setTimeout(() => {
+    waitingTimerId = setTimeout(() => {
       setTitle('Waiting for InstantSearch...');
 
-      clearTimeout(timerId);
+      clearTimeout(waitingTimerId);
     }, 500);
 
-    timerId = setTimeout(() => {
+    detectedTimerId = setTimeout(() => {
       setTitle('InstantSearch was not detected');
       setIsEnabled(false);
 
-      clearTimeout(timerId);
+      clearTimeout(detectedTimerId);
     }, 1500);
 
     return () => {
-      clearTimeout(timerId);
+      clearTimeout(waitingTimerId);
+      clearTimeout(detectedTimerId);
     };
   }, []);
 

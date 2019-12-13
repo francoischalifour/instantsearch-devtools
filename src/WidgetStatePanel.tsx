@@ -18,7 +18,7 @@ interface WidgetStatePanelProps {
 }
 
 export function WidgetStatePanel({ widget }: WidgetStatePanelProps) {
-  const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
+  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
   const { onCopy } = useClipboard(JSON.stringify(widget.state, null, 2));
 
   return (
